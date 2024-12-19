@@ -171,7 +171,7 @@ export const forgotPassword = async (req, res) => {
       `${process.env.CLIENT_URL}/reset-password/${resetToken}`
     );
 
-    return res.json({
+    return res.status(200).json({
       sucess: true,
       message: "Reset Password Email Sent Successfully",
     });
@@ -206,7 +206,29 @@ export const resetPassword = async (req, res) => {
     // ? Send Password Reset Successful Email
     await sendPasswordResetSuccessfulEmail(user.email);
 
-    return res.json({ sucess: true, message: "Password Reset Successfully" });
+    return res
+      .status(200)
+      .json({ sucess: true, message: "Password Reset Successfully" });
+  } catch (error) {
+    return res.status(400).json({ sucess: false, message: error.message });
+  }
+};
+
+export const checkAuthenticated = async (req, res) => {
+  try {
+    let user = await User.findById(req.userId).select("-password");
+
+    if (!user) {
+      throw new Error("User Not Found");
+    }
+
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpiresAt = undefined;
+
+    // ! Update Reset Token of User
+    await user.save();
+
+    return res.status(200).json({ sucess: true, user });
   } catch (error) {
     return res.status(400).json({ sucess: false, message: error.message });
   }
