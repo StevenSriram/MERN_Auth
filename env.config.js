@@ -8,9 +8,12 @@ dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 const config = {
   PORT: process.env.PORT,
-  MONGO_URI: process.env.MONGO_URI,
   JWT_SECRET: process.env.JWT_SECRET,
+  MONGO_URI: process.env.MONGO_URI,
+
   NODE_ENV: process.env.NODE_ENV,
+
+  MAILTRAP_TOKEN: process.env.MAILTRAP_TOKEN,
 };
 
 export default config;

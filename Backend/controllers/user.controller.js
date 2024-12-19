@@ -5,6 +5,8 @@ import bcrypt from "bcryptjs";
 import { generateJWT } from "../utils/generateJWT.js";
 import { generateOTP } from "../utils/generateOTP.js";
 
+import { sendVerificationMail } from "../mail/sendMail.js";
+
 export const signUp = async (req, res) => {
   const { email, password, name } = req.body;
 
@@ -38,6 +40,9 @@ export const signUp = async (req, res) => {
     await user.save();
 
     const token = generateJWT(res, user._id);
+
+    // ? Send Verification Email
+    await sendVerificationMail(user.email, verificationToken);
 
     user = { ...user._doc, password: undefined };
 
