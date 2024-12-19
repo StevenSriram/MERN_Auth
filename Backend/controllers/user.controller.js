@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import { generateJWT } from "../utils/generateJWT.js";
 import { generateOTP } from "../utils/generateOTP.js";
 
-import { sendVerificationMail } from "../mail/sendMail.js";
+import { sendVerificationMail, sendWelcomeMail } from "../mail/sendMail.js";
 
 export const signUp = async (req, res) => {
   const { email, password, name } = req.body;
@@ -52,6 +52,39 @@ export const signUp = async (req, res) => {
       user,
       message: "User Created Successfully",
     });
+  } catch (error) {
+    return res.status(400).json({ sucess: false, message: error.message });
+  }
+};
+
+export const verifyEmail = async (req, res) => {
+  const { code } = req.body;
+
+  try {
+    let user = await User.findOne({
+      verificationToken: code,
+      verificationTokenExpiresAt: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      throw new Error("Invalid or Expired Verification Code");
+    }
+
+    user.isValid = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpiresAt = undefined;
+
+    // ! Update Verifaction of User
+    await user.save();
+
+    // ? Send Welcome Email
+    await sendWelcomeMail(user.email, user.name);
+
+    user = { ...user._doc, password: undefined };
+
+    return res
+      .status(200)
+      .json({ sucess: true, user, message: "Email Verified" });
   } catch (error) {
     return res.status(400).json({ sucess: false, message: error.message });
   }

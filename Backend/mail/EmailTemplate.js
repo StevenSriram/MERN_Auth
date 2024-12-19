@@ -94,4 +94,6 @@ export const PASSWORD_RESET_REQUEST_TEMPLATE = `
 </html>
 `;
 
+export const WELCOME_TEMPLATE_ID = "f11f7c98-e15a-4e0b-b8c7-a95fb55159d8";
+
 // mailtrap@demomailtrap.com
