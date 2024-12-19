@@ -4,8 +4,13 @@ import bcrypt from "bcryptjs";
 
 import { generateJWT } from "../utils/generateJWT.js";
 import { generateOTP } from "../utils/generateOTP.js";
+import { generateResetToken } from "../utils/generateResetToken.js";
 
-import { sendVerificationMail, sendWelcomeMail } from "../mail/sendMail.js";
+import {
+  sendVerificationMail,
+  sendWelcomeMail,
+  sendResetPasswordEmail,
+} from "../mail/sendMail.js";
 
 export const signUp = async (req, res) => {
   const { email, password, name } = req.body;
@@ -138,4 +143,38 @@ export const logIn = async (req, res) => {
 export const logOut = async (req, res) => {
   res.clearCookie("jwt");
   res.status(200).json({ sucess: true, message: "Logged Out Successfully" });
+};
+
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      throw new Error("User Not Found");
+    }
+
+    // * Generate Random Verification Token
+    const resetToken = generateResetToken();
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+
+    // ! Update Reset Token of User
+    await user.save();
+
+    // ? Send Reset Password Email
+    await sendResetPasswordEmail(
+      user.email,
+      `${process.env.CLIENT_URL}/reset-password/${resetToken}`
+    );
+
+    return res.json({
+      sucess: true,
+      message: "Reset Password Email Sent Successfully",
+    });
+  } catch (error) {
+    return res.status(400).json({ sucess: false, message: error.message });
+  }
 };
