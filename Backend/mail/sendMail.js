@@ -3,6 +3,7 @@ import {
   VERIFICATION_EMAIL_TEMPLATE,
   WELCOME_TEMPLATE_ID,
   PASSWORD_RESET_REQUEST_TEMPLATE,
+  PASSWORD_RESET_SUCCESS_TEMPLATE,
 } from "./EmailTemplate.js";
 
 import { client, sender } from "./configMailTrap.js";
@@ -61,6 +62,23 @@ export const sendResetPasswordEmail = async (email, resetURL) => {
       html: PASSWORD_RESET_REQUEST_TEMPLATE.replace("{resetURL}", resetURL),
     });
 
+    console.log(response);
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+};
+
+export const sendPasswordResetSuccessfulEmail = async (email) => {
+  const recipients = [{ email }];
+
+  try {
+    const response = await client.send({
+      from: sender,
+      to: recipients,
+      subject: "Password Reset Successful",
+      html: PASSWORD_RESET_SUCCESS_TEMPLATE,
+      category: "Password Reset",
+    });
     console.log(response);
   } catch (error) {
     console.error("Error sending email:", error);
