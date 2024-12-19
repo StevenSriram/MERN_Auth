@@ -34,7 +34,7 @@ export const signUp = async (req, res) => {
       password: hashPassword,
       name,
       verificationToken,
-      verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000,
+      verificationTokenExpiresAt: Date.now() + 15 * 60 * 1000, // 15 minutes
     });
     // ! Save User to DB
     await user.save();
@@ -91,9 +91,51 @@ export const verifyEmail = async (req, res) => {
 };
 
 export const logIn = async (req, res) => {
-  res.send("login");
+  const { email, password } = req.body;
+
+  try {
+    if (!email || !password) {
+      throw new Error("Missing Fields");
+    }
+
+    // * Check if user exists
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      throw new Error("User Not Found");
+    }
+
+    // ? Is User Verified
+    if (!user.isValid) {
+      throw new Error("User Not Verified");
+    }
+
+    // * Check Password
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      throw new Error("Invalid Credentials");
+    }
+
+    // * Generate JWT Token
+    const token = generateJWT(res, user._id);
+
+    user.lastLogin = Date.now();
+
+    // ! Update lastLogin of  User
+    await user.save();
+
+    user = { ...user._doc, password: undefined };
+
+    return res
+      .status(200)
+      .json({ sucess: true, token, user, message: "Logged In Successfully" });
+  } catch (error) {
+    return res.status(400).json({ sucess: false, message: error.message });
+  }
 };
 
 export const logOut = async (req, res) => {
-  res.send("logout");
+  res.clearCookie("jwt");
+  res.status(200).json({ sucess: true, message: "Logged Out Successfully" });
 };
