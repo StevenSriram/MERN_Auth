@@ -10,6 +10,7 @@ import {
   sendVerificationMail,
   sendWelcomeMail,
   sendResetPasswordEmail,
+  sendPasswordResetSuccessfulEmail,
 } from "../mail/sendMail.js";
 
 export const signUp = async (req, res) => {
@@ -174,6 +175,38 @@ export const forgotPassword = async (req, res) => {
       sucess: true,
       message: "Reset Password Email Sent Successfully",
     });
+  } catch (error) {
+    return res.status(400).json({ sucess: false, message: error.message });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  try {
+    let user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpiresAt: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      throw new Error("Invalid or Expired Token");
+    }
+
+    const hashPassword = await bcrypt.hash(password, 10);
+
+    user.password = hashPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpiresAt = undefined;
+
+    // ! Update Password of User
+    await user.save();
+
+    // ? Send Password Reset Successful Email
+    await sendPasswordResetSuccessfulEmail(user.email);
+
+    return res.json({ sucess: true, message: "Password Reset Successfully" });
   } catch (error) {
     return res.status(400).json({ sucess: false, message: error.message });
   }
