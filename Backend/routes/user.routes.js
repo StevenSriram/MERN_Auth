@@ -1,5 +1,7 @@
 import express from "express";
 
+import { verifyJWT } from "../middleware/verifyJWT.js";
+
 import {
   signUp,
   logIn,
@@ -7,6 +9,7 @@ import {
   verifyEmail,
   forgotPassword,
   resetPassword,
+  checkAuthenticated,
 } from "../controllers/user.controller.js";
 
 const router = express.Router();
@@ -24,5 +27,8 @@ router.post("/forgot-password", forgotPassword);
 
 // ? Reset User Password with Token
 router.post("/reset-password/:token", resetPassword);
+
+// ? Check Authenticated
+router.get("/check-auth", verifyJWT, checkAuthenticated);
 
 export default router;
