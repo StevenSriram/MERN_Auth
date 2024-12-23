@@ -14,6 +14,10 @@ import {
 
 const router = express.Router();
 
+router.get("/", (_, res) => {
+  res.status(200).send("API Routes...");
+});
+
 // ? Signup and Verification
 router.post("/signup", signUp);
 router.post("/verify-email", verifyEmail);
