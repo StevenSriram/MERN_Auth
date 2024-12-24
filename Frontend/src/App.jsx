@@ -1,11 +1,14 @@
 import React from "react";
-import FloatingShape from "./components/FloatingShape";
+import { Routes, Route } from "react-router-dom";
+
+import { FloatingShape } from "./components";
+import { SignUpPage, LoginPage } from "./pages";
 
 const App = () => {
   return (
     <main
-      className="min-h-screen bg-gradient-to-br from-gray-900
-     via-green-900 to-emerald-900 flex justify-center items-center
+      className="min-h-screen bg-gradient-to-br from-gray-800
+     via-green-800 to-emerald-800 flex justify-center items-center
       relative overflow-hidden"
     >
       <FloatingShape
@@ -29,6 +32,12 @@ const App = () => {
         left="-10%"
         delay={2}
       />
+
+      <Routes>
+        <Route path="/" element={"Home"}></Route>
+        <Route path="/signup" element={<SignUpPage />}></Route>
+        <Route path="/login" element={<LoginPage />}></Route>
+      </Routes>
     </main>
   );
 };
