@@ -19,7 +19,11 @@ const PassWordCriteria = ({ pass }) => {
           ) : (
             <X className="mr-2 text-gray-500" />
           )}
-          <span className={item.met ? "text-green-500" : "text-gray-400"}>
+          <span
+            className={`font-montserrat leading-normal ${
+              item.met ? "text-green-500" : "text-gray-500"
+            }`}
+          >
             {item.label}
           </span>
         </div>
@@ -61,6 +65,7 @@ const PasswordStrengthMeter = ({ password }) => {
     return "Strong";
   };
 
+  // ! Meter to show Strength of Password
   return (
     <div className="mt-2">
       <div className="flex justify-between items-center mb-1">
@@ -69,7 +74,6 @@ const PasswordStrengthMeter = ({ password }) => {
           {getStrengthText(strength)}
         </span>
       </div>
-      // ! Meter to show Strength of Password
       <div className="flex space-x-1">
         {[...Array(4)].map((_, index) => (
           <div
