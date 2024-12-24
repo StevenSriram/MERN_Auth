@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { FloatingShape } from "./components";
-import { SignUpPage, LoginPage } from "./pages";
+import { SignUpPage, LoginPage, ForgotPasswordPage } from "./pages";
 
 const App = () => {
   return (
@@ -37,6 +37,7 @@ const App = () => {
         <Route path="/" element={"Home"}></Route>
         <Route path="/signup" element={<SignUpPage />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
+        <Route path="/forgot-password" element={<ForgotPasswordPage />}></Route>
       </Routes>
     </main>
   );
