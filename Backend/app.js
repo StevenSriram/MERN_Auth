@@ -1,17 +1,15 @@
 import express from "express";
 import config from "../env.config.js";
 
-import cookieParser from "cookie-parser";
-
 import authRoutes from "./routes/user.routes.js";
 import connectDB from "./db/configDB.js";
+import cookieParser from "cookie-parser";
 
 import { rateLimit } from "express-rate-limit";
 import { rateLimitHandler } from "./utils/rateLimitHandler.js";
-
 import helmet from "helmet";
-
 import morgan from "morgan";
+import cors from "cors";
 
 const app = express();
 
@@ -34,14 +32,23 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+// ! Cross Origin Resource Sharing (CORS)
+app.use(
+  cors({
+    origin: [process.env.CLIENT_URL],
+    credentials: true,
+  })
+);
+
 // * Testing Route
 app.get("/", (_, res) => {
   res.status(200).send("Server Running...");
 });
 
+// * Authentication Routes
 app.use("/api/auth", authRoutes);
 
-const port = config.PORT || 3000;
+const port = process.env.PORT || 3000;
 app.listen(port, async () => {
   connectDB();
 
