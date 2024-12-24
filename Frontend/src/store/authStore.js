@@ -12,7 +12,7 @@ const API_URL = "http://localhost:5000";
 // ! Allowing Cross-Origin Requests (CORS)
 axios.defaults.withCredentials = true;
 
-const useAuthStore = create((set) => ({
+export const useAuthStore = create((set) => ({
   user: null,
 
   isAuthenticated: false,
@@ -25,7 +25,7 @@ const useAuthStore = create((set) => ({
     set({ isLoading: true, error: null });
 
     try {
-      const response = axios.post(`${API_URL}/api/auth/signup`, {
+      const response = await axios.post(`${API_URL}/api/auth/signup`, {
         email,
         password,
         name,

@@ -1,17 +1,29 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import { Lock, Mail, User } from "lucide-react";
+import { Loader, Lock, Mail, User } from "lucide-react";
 import { Input, PasswordStrengthMeter } from "../components";
+
+import { useAuthStore } from "../store/authStore";
 
 const SignUpPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const { signup, error, isLoading } = useAuthStore();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      await signup(email, password, name);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -26,6 +38,12 @@ const SignUpPage = () => {
         <h2 className="text-2xl text-center mb-5 font-bold bg-gradient-to-r from-green-500 to-emerald-500 text-transparent bg-clip-text">
           Create Account
         </h2>
+
+        {error && (
+          <p className="text-red-500 font-montserrat leading-normal text-md text-center my-2">
+            {error}
+          </p>
+        )}
 
         <form onSubmit={handleSubmit}>
           <Input
@@ -63,8 +81,13 @@ const SignUpPage = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
+            disabled={isLoading}
           >
-            Sign Up
+            {isLoading ? (
+              <Loader className="size-6 animate-spin mx-auto" />
+            ) : (
+              "Sign Up"
+            )}
           </motion.button>
         </form>
       </div>
