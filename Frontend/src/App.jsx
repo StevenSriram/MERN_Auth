@@ -2,7 +2,12 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { FloatingShape } from "./components";
-import { SignUpPage, LoginPage, ForgotPasswordPage } from "./pages";
+import {
+  SignUpPage,
+  LoginPage,
+  ForgotPasswordPage,
+  VerifyEmailPage,
+} from "./pages";
 
 const App = () => {
   return (
@@ -35,7 +40,10 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={"Home"}></Route>
+
         <Route path="/signup" element={<SignUpPage />}></Route>
+        <Route path="/verify-email" element={<VerifyEmailPage />}></Route>
+
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/forgot-password" element={<ForgotPasswordPage />}></Route>
       </Routes>
