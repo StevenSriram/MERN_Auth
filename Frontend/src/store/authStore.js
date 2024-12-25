@@ -18,7 +18,7 @@ export const useAuthStore = create((set) => ({
   isAuthenticated: false,
   error: null,
   isLoading: false,
-  isCheckingAuth: true,
+  isCheckingAuth: false,
 
   // * SignUp Handler
   signup: async (email, password, name) => {
@@ -39,6 +39,7 @@ export const useAuthStore = create((set) => ({
     } catch (error) {
       set({
         error: error.response.data.message || "Error in SignUp",
+        isAuthenticated: false,
         isLoading: false,
       });
       throw error;
@@ -60,9 +61,25 @@ export const useAuthStore = create((set) => ({
     } catch (error) {
       set({
         error: error.response.data.message || "Error in Verification",
+        isAuthenticated: false,
         isLoading: false,
       });
       throw error;
+    }
+  },
+
+  checkAuth: async () => {
+    set({ isCheckingAuth: true, error: null });
+
+    try {
+      const response = await axios.get(`${API_URL}/api/auth/check-auth`);
+      set({
+        user: response.data.user,
+        isAuthenticated: true,
+        isCheckingAuth: false,
+      });
+    } catch (error) {
+      set({ isAuthenticated: false, isCheckingAuth: false });
     }
   },
 }));

@@ -25,7 +25,7 @@ app.use(helmet());
 // ! use Rate Limiter to all Routes
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 5, // Limit each IP to 5 requests per window
+  max: 30, // Limit each IP to 30 requests per window
   message: "Too many requests, please try again after a minute.",
   handler: rateLimitHandler,
   headers: true,
@@ -36,6 +36,7 @@ app.use(limiter);
 app.use(
   cors({
     origin: [process.env.CLIENT_URL],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   })
 );

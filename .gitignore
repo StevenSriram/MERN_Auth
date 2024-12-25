@@ -25,3 +25,12 @@ dist-ssr
 
 # Secrets
 .env
+
+# ? Ignore GIT from Tracking
+    # * git rm -r --cached .env
+
+# ? Update Chages in Commit History
+    # * git filter-branch --index-filter "git rm -rf --cached --ignore-unmatch .env" HEAD
+
+# ? Forces to Push Changes
+    # * git push --force
