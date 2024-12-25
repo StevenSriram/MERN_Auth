@@ -4,15 +4,23 @@ import { Link } from "react-router-dom";
 
 import { Lock, Mail, Loader } from "lucide-react";
 import { Input } from "../components";
+import { useAuthStore } from "../store/authStore";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const isLoading = true;
+  const { login, error, isLoading } = useAuthStore();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      await login(email, password, name);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -28,6 +36,11 @@ const LoginPage = () => {
           Welcome Back
         </h2>
 
+        {error && (
+          <p className="text-red-500 font-montserrat leading-normal text-md text-center my-2">
+            {error}
+          </p>
+        )}
         <form onSubmit={handleSubmit}>
           <Input
             icon={Mail}
