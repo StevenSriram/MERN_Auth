@@ -1,20 +1,38 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+
+import toast from "react-hot-toast";
+import { Loader } from "lucide-react";
+import { useAuthStore } from "../store/authStore";
 
 const VerifyEmailPage = () => {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef([]);
+  const navigate = useNavigate();
 
-  const isLoading = false;
+  const { verifyEmail, error, isLoading } = useAuthStore();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const VerificationCode = code.join("");
+
+    try {
+      await verifyEmail(VerificationCode);
+      navigate("/");
+
+      // ? Sucess Toast
+      toast.success("Email Verified");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
     // ? Handle Verification
     if (code.every((digit) => digit !== "")) {
-      console.log("Verification Code:", code.join(""));
+      handleSubmit(new Event("submit"));
     }
   }, [code]);
 
@@ -63,6 +81,13 @@ const VerifyEmailPage = () => {
         <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-500 text-transparent bg-clip-text">
           Verify Your Email
         </h2>
+
+        {error && (
+          <p className="text-red-500 font-montserrat leading-normal text-md text-center my-2">
+            {error}
+          </p>
+        )}
+
         <p className="text-center text-gray-300 mb-6">
           Enter the 6-digit code sent to your email address.
         </p>
@@ -87,10 +112,14 @@ const VerifyEmailPage = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             type="submit"
-            disabled={isLoading || code.some((digit) => !digit)}
             className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 disabled:opacity-50"
+            disabled={isLoading || code.some((digit) => !digit)}
           >
-            {isLoading ? "Verifying..." : "Verify Email"}
+            {isLoading ? (
+              <Loader className="size-6 animate-spin mx-auto" />
+            ) : (
+              "Verify Email"
+            )}
           </motion.button>
         </form>
       </motion.div>
