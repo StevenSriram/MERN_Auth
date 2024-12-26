@@ -7,8 +7,9 @@ import { FloatingShape, AnimatedLoader } from "./components";
 import {
   SignUpPage,
   LoginPage,
-  ForgotPasswordPage,
   VerifyEmailPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
   DashBoardPage,
 } from "./pages";
 
@@ -92,7 +93,23 @@ const App = () => {
             </RedirectRoutes>
           }
         ></Route>
-        <Route path="/forgot-password" element={<ForgotPasswordPage />}></Route>
+        <Route
+          path="/forgot-password"
+          element={
+            <RedirectRoutes>
+              <ForgotPasswordPage />
+            </RedirectRoutes>
+          }
+        ></Route>
+
+        <Route
+          path="/reset-password/:token"
+          element={
+            <RedirectRoutes>
+              <ResetPasswordPage />
+            </RedirectRoutes>
+          }
+        ></Route>
       </Routes>
 
       <Toaster />
