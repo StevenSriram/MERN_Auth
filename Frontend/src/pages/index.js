@@ -4,6 +4,8 @@ import VerifyEmailPage from "./VerifyEmailPage";
 import LoginPage from "./LoginPage";
 import ForgotPasswordPage from "./ForgotPasswordPage";
 import ResetPasswordPage from "./ResetPasswordPage";
+import NotFoundPage from "./NotFoundPage";
+import RateLimitPage from "./RateLimitPage";
 
 export {
   DashBoardPage,
@@ -12,4 +14,6 @@ export {
   LoginPage,
   ForgotPasswordPage,
   ResetPasswordPage,
+  NotFoundPage,
+  RateLimitPage,
 };

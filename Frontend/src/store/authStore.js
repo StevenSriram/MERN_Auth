@@ -153,7 +153,7 @@ export const useAuthStore = create((set) => ({
   checkAuth: async () => {
     set({ isCheckingAuth: true, error: null });
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     try {
       const response = await axios.get(`${API_URL}/api/auth/check-auth`);
@@ -163,7 +163,21 @@ export const useAuthStore = create((set) => ({
         isCheckingAuth: false,
       });
     } catch (error) {
-      set({ isAuthenticated: false, isCheckingAuth: false });
+      // ! Bad Request - 400 (Client Error)
+      if (error.response) {
+        set({
+          error: error.response.data.message || "Error in Authentication",
+          isAuthenticated: false,
+          isCheckingAuth: false,
+        });
+      }
+      // ! API Unreachable - 500 (Server Error)
+      else {
+        set({
+          error: "Network Error. Please try again later.",
+          isCheckingAuth: false,
+        });
+      }
     }
   },
 }));

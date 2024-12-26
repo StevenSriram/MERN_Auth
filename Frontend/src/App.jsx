@@ -11,13 +11,15 @@ import {
   ForgotPasswordPage,
   ResetPasswordPage,
   DashBoardPage,
+  NotFoundPage,
+  RateLimitPage,
 } from "./pages";
 
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import RedirectRoutes from "./routes/RedirectRoutes";
 
 const App = () => {
-  const { isCheckingAuth, checkAuth } = useAuthStore();
+  const { isCheckingAuth, checkAuth, error } = useAuthStore();
   const [isAppReady, setIsAppReady] = useState(false);
 
   // ? once Auth Checked - set App Ready
@@ -28,6 +30,10 @@ const App = () => {
   if (!isAppReady || isCheckingAuth) {
     // ? Show Loading untill checking Auth
     return <AnimatedLoader />;
+  }
+
+  if (error === "Network Error. Please try again later.") {
+    return <RateLimitPage />;
   }
 
   return (
@@ -110,6 +116,8 @@ const App = () => {
             </RedirectRoutes>
           }
         ></Route>
+
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
       <Toaster />

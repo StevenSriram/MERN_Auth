@@ -6,7 +6,6 @@ import connectDB from "./db/configDB.js";
 import cookieParser from "cookie-parser";
 
 import { rateLimit } from "express-rate-limit";
-import { rateLimitHandler } from "./utils/rateLimitHandler.js";
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
@@ -25,9 +24,9 @@ app.use(helmet());
 // ! use Rate Limiter to all Routes
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 30, // Limit each IP to 30 requests per window
-  message: "Too many requests, please try again after a minute.",
-  handler: rateLimitHandler,
+  max: 15, // Limit each IP to 15 requests per window
+  message: "Too many requests, Rate Limit Exceeds",
+  statusCode: 429,
   headers: true,
 });
 app.use(limiter);
