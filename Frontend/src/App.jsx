@@ -36,13 +36,13 @@ const RedirectRoutes = ({ children }) => {
 };
 
 const App = () => {
-  const { user, isAuthenticated, checkAuth } = useAuthStore();
+  const { isCheckingAuth, checkAuth } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
-  console.log(`isAuthenticated : ${isAuthenticated}`);
-  console.log(`User : ${user?.isValid}`);
+
+  if (isCheckingAuth) return <h1>Loading...</h1>;
 
   return (
     <main
