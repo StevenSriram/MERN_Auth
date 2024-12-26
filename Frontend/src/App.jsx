@@ -1,9 +1,9 @@
-import { React, useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { React, useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/authStore";
 
-import { FloatingShape } from "./components";
+import { FloatingShape, AnimatedLoader } from "./components";
 import {
   SignUpPage,
   LoginPage,
@@ -12,37 +12,22 @@ import {
   DashBoardPage,
 } from "./pages";
 
-const ProtectedRoutes = ({ children }) => {
-  const { isAuthenticated, user } = useAuthStore();
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (!user.isValid) {
-    return <Navigate to="/verify-email" replace />;
-  }
-
-  return children;
-};
-
-const RedirectRoutes = ({ children }) => {
-  const { isAuthenticated, user } = useAuthStore();
-
-  if (isAuthenticated && user.isValid) {
-    return <Navigate to="/" replace />;
-  }
-  return children;
-};
+import ProtectedRoutes from "./routes/ProtectedRoutes";
+import RedirectRoutes from "./routes/RedirectRoutes";
 
 const App = () => {
   const { isCheckingAuth, checkAuth } = useAuthStore();
+  const [isAppReady, setIsAppReady] = useState(false);
 
+  // ? once Auth Checked - set App Ready
   useEffect(() => {
-    checkAuth();
+    checkAuth().finally(() => setIsAppReady(true));
   }, [checkAuth]);
 
-  if (isCheckingAuth) return <h1>Loading...</h1>;
+  if (!isAppReady || isCheckingAuth) {
+    // ? Show Loading untill checking Auth
+    return <AnimatedLoader />;
+  }
 
   return (
     <main
