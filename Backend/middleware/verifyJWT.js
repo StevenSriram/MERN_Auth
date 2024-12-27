@@ -4,10 +4,6 @@ export const verifyJWT = (req, res, next) => {
   const token = req.cookies.jwt;
 
   try {
-    if (!token) {
-      throw new Error("Unauthorized - No Token");
-    }
-
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     if (!decoded) {

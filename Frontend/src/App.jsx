@@ -12,7 +12,6 @@ import {
   ResetPasswordPage,
   DashBoardPage,
   NotFoundPage,
-  RateLimitPage,
 } from "./pages";
 
 import ProtectedRoutes from "./routes/ProtectedRoutes";
@@ -30,10 +29,6 @@ const App = () => {
   if (!isAppReady || isCheckingAuth) {
     // ? Show Loading untill checking Auth
     return <AnimatedLoader />;
-  }
-
-  if (error === "Network Error. Please try again later.") {
-    return <RateLimitPage />;
   }
 
   return (
@@ -72,7 +67,7 @@ const App = () => {
               <DashBoardPage />
             </ProtectedRoutes>
           }
-        ></Route>
+        />
 
         <Route
           path="/signup"
@@ -81,7 +76,7 @@ const App = () => {
               <SignUpPage />
             </RedirectRoutes>
           }
-        ></Route>
+        />
         <Route
           path="/verify-email"
           element={
@@ -89,7 +84,7 @@ const App = () => {
               <VerifyEmailPage />
             </RedirectRoutes>
           }
-        ></Route>
+        />
 
         <Route
           path="/login"
@@ -98,7 +93,7 @@ const App = () => {
               <LoginPage />
             </RedirectRoutes>
           }
-        ></Route>
+        />
         <Route
           path="/forgot-password"
           element={
@@ -106,7 +101,7 @@ const App = () => {
               <ForgotPasswordPage />
             </RedirectRoutes>
           }
-        ></Route>
+        />
 
         <Route
           path="/reset-password/:token"
@@ -115,8 +110,7 @@ const App = () => {
               <ResetPasswordPage />
             </RedirectRoutes>
           }
-        ></Route>
-
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
 

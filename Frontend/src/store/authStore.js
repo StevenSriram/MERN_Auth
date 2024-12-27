@@ -7,7 +7,8 @@ import { create } from "zustand";
 import axios from "axios";
 
 // ? BackEnd URL
-const API_URL = "http://localhost:5000";
+const API_URL =
+  import.meta.env.MODE === "production" ? "" : "http://localhost:5000";
 
 // ! Allowing Cross-Origin Requests (CORS)
 axios.defaults.withCredentials = true;
@@ -153,7 +154,7 @@ export const useAuthStore = create((set) => ({
   checkAuth: async () => {
     set({ isCheckingAuth: true, error: null });
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // ! await new Promise((resolve) => setTimeout(resolve, 500));
 
     try {
       const response = await axios.get(`${API_URL}/api/auth/check-auth`);
@@ -164,20 +165,11 @@ export const useAuthStore = create((set) => ({
       });
     } catch (error) {
       // ! Bad Request - 400 (Client Error)
-      if (error.response) {
-        set({
-          error: error.response.data.message || "Error in Authentication",
-          isAuthenticated: false,
-          isCheckingAuth: false,
-        });
-      }
-      // ! API Unreachable - 500 (Server Error)
-      else {
-        set({
-          error: "Network Error. Please try again later.",
-          isCheckingAuth: false,
-        });
-      }
+      set({
+        error: null,
+        isAuthenticated: false,
+        isCheckingAuth: false,
+      });
     }
   },
 }));
