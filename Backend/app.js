@@ -4,19 +4,22 @@ import config from "../env.config.js";
 import authRoutes from "./routes/user.routes.js";
 import connectDB from "./db/configDB.js";
 import cookieParser from "cookie-parser";
+import path from "path";
 
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
-import morgan from "morgan";
+// ? import morgan from "morgan";
 import cors from "cors";
 
 const app = express();
+const __dirname = path.resolve();
+const port = process.env.PORT || 3000;
 
 app.use(express.json()); // * Middleware to parse json Payload
 app.use(cookieParser()); // * Allow to parse Cookies
 
 // ! HTTP logger - debugging Purpose
-app.use(morgan("dev"));
+// ? app.use(morgan("dev"));
 
 // ! setting various HTTP headers - hide X-Powered-By
 app.use(helmet());
@@ -40,15 +43,19 @@ app.use(
   })
 );
 
-// * Testing Route
-app.get("/", (_, res) => {
-  res.status(200).send("Server Running...");
-});
-
 // * Authentication Routes
 app.use("/api/auth", authRoutes);
 
-const port = process.env.PORT || 3000;
+// ? REACT APP START
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "/Frontend/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "Frontend", "dist", "index.html"));
+  });
+}
+// ? REACT APP END
+
 app.listen(port, async () => {
   connectDB();
 

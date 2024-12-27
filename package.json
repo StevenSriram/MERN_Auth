@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "Backend/app.js",
   "scripts": {
-    "start": "nodemon Backend/app.js"
+    "dev": "cross-env NODE_ENV=development nodemon Backend/app.js",
+    "start": "cross-env NODE_ENV=production node Backend/app.js",
+    "build": "npm install & npm install --prefix Frontend && npm run build --prefix Frontend"
   },
   "keywords": [],
   "type": "module",
@@ -11,6 +13,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "nodemon": "^3.1.9"
   },
   "dependencies": {
